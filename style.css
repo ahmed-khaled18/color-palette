@@ -47,10 +47,10 @@ i {
   border-top-right-radius: 1rem;
   border-top-left-radius: 1rem;
   width: 80%;
-  opacity: 0;
-  transform: translateY(100px);
+  opacity: 1;
+  /* transform: translateY(100px); */
   transition: all 0.5s ease-in-out;
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 .sliders.active {
@@ -114,4 +114,28 @@ i {
 
 .panel p {
   font-size: 1.2rem;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  position: relative;
+  width: 100%;
+  margin: 1rem 0rem;
+  cursor: pointer;
+  border-radius: 1rem;
+  border: none;
+  background: white;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  background: white;
+  height: 0.7rem;
+  width: 0.7rem;
+  border-radius: 50%;
+}
+
+input[type="range"]::-moz-range-thumb {
+  border: none;
 }

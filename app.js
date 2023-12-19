@@ -1,16 +1,23 @@
 // selctors and variables
-const colorDiv = document.querySelectorAll(".color");
+const colorDivs = document.querySelectorAll(".color");
+const generateButton = document.querySelector(".generate");
 const sliders = document.querySelectorAll('input[type = "range"]');
 const currentHexs = document.querySelectorAll(".color h2");
 const popup = document.querySelector(".copy-container");
+const adjustButtons = document.querySelectorAll(".adjust");
+const lockButtons = document.querySelectorAll(".lock");
+const closeAdjustments = document.querySelectorAll(".close-adjustment");
+const sliderContainer = document.querySelectorAll(".sliders");
 let intialColors;
 
 // event listeners
+generateButton.addEventListener("click", randomColors);
+
 sliders.forEach((slider) => {
   slider.addEventListener("input", hslControls);
 });
 
-colorDiv.forEach((div, index) => {
+colorDivs.forEach((div, index) => {
   div.addEventListener("change", () => {
     updateTextUI(index);
   });
@@ -27,6 +34,25 @@ popup.addEventListener("transitionend", () => {
   popup.classList.remove("active");
   popupBox.classList.remove("active");
 });
+
+adjustButtons.forEach((button, index) => {
+  button.addEventListener("click", () => {
+    openAdjustmentPanel(index);
+  });
+});
+
+closeAdjustments.forEach((button, index) => {
+  button.addEventListener("click", () => {
+    console.log("click");
+    closeAdjustmentPanel(index);
+  });
+});
+
+lockButtons.forEach((button, index) => {
+  button.addEventListener("click", () => {
+    toggleLockButtons(index);
+  });
+});
 // functions
 function generateRandomColor() {
   return chroma.random();
@@ -34,11 +60,17 @@ function generateRandomColor() {
 
 function randomColors() {
   intialColors = [];
-  colorDiv.forEach((div) => {
+  colorDivs.forEach((div) => {
     const randomColor = generateRandomColor();
     const hexText = div.children[0];
 
-    intialColors.push(chroma(randomColor).hex());
+    //check if this panel is locked
+    if (div.classList.contains("locked")) {
+      intialColors.push(hexText.innerText);
+      return;
+    } else {
+      intialColors.push(chroma(randomColor).hex());
+    }
     // add the color to bg
     div.style.background = randomColor;
     hexText.innerText = randomColor;
@@ -56,6 +88,14 @@ function randomColors() {
   });
   // reset sliders values
   resetInputs();
+
+  //check slider buttons contrast
+  adjustButtons.forEach((button, index) => {
+    checkContrast(intialColors[index], button);
+  });
+  lockButtons.forEach((button, index) => {
+    checkContrast(intialColors[index], button);
+  });
 }
 
 function checkContrast(color, text) {
@@ -105,11 +145,11 @@ function hslControls(e) {
   let color = chroma(bgColor).set("hsl.h", hue.value).set("hsl.s", saturation.value).set("hsl.l", brightness.value);
   colorizeSliders(color, hue, brightness, saturation);
 
-  colorDiv[index].style.background = color;
+  colorDivs[index].style.background = color;
 }
 
 function updateTextUI(index) {
-  const activeDiv = colorDiv[index];
+  const activeDiv = colorDivs[index];
   const color = chroma(activeDiv.style.background);
   const textHex = activeDiv.querySelector("h2");
   const icons = activeDiv.querySelectorAll(".controls button");
@@ -154,5 +194,20 @@ function copyToClipboard(hex) {
   const popupBox = popup.children[0];
   popup.classList.add("active");
   popupBox.classList.add("active");
+}
+
+function openAdjustmentPanel(index) {
+  sliderContainer[index].classList.toggle("active");
+}
+
+function closeAdjustmentPanel(index) {
+  sliderContainer[index].classList.toggle("active");
+}
+
+function toggleLockButtons(index) {
+  const icon = lockButtons[index].firstChild;
+  icon.classList.toggle("fa-lock-open");
+  icon.classList.toggle("fa-lock");
+  colorDivs[index].classList.toggle("locked");
 }
 randomColors();

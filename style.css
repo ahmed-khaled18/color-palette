@@ -47,10 +47,9 @@ i {
   border-top-right-radius: 1rem;
   border-top-left-radius: 1rem;
   width: 80%;
-  opacity: 1;
-  /* transform: translateY(100px); */
+  opacity: 0;
+  transform: translateY(100px);
   transition: all 0.5s ease-in-out;
-  /* pointer-events: none; */
 }
 
 .sliders.active {
@@ -58,17 +57,19 @@ i {
   opacity: 1;
 }
 
-.sliders button {
+.sliders button,
+.close-save,
+.close-library {
   position: absolute;
   top: 0;
   right: 0;
   padding: 0.5rem;
-  cursor: pointer;
-  color: white;
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
   border: none;
   background: rgb(73, 73, 73);
+  color: white;
+  cursor: pointer;
   font-weight: bold;
 }
 

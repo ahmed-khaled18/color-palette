@@ -8,7 +8,13 @@ const adjustButtons = document.querySelectorAll(".adjust");
 const lockButtons = document.querySelectorAll(".lock");
 const closeAdjustments = document.querySelectorAll(".close-adjustment");
 const sliderContainer = document.querySelectorAll(".sliders");
+const saveBtn = document.querySelector(".save");
+const submitSave = document.querySelector(".submit-save");
+const closeSave = document.querySelector(".close-save");
+const saveContainer = document.querySelector(".save-container");
+const saveInput = document.querySelector(".save-container input");
 let intialColors;
+let savedPalettes = [];
 
 // event listeners
 generateButton.addEventListener("click", randomColors);
@@ -53,6 +59,11 @@ lockButtons.forEach((button, index) => {
     toggleLockButtons(index);
   });
 });
+
+saveBtn.addEventListener("click", openPalette);
+closeSave.addEventListener("click", closePalette);
+submitSave.addEventListener("click", savePalette);
+
 // functions
 function generateRandomColor() {
   return chroma.random();
@@ -209,5 +220,45 @@ function toggleLockButtons(index) {
   icon.classList.toggle("fa-lock-open");
   icon.classList.toggle("fa-lock");
   colorDivs[index].classList.toggle("locked");
+}
+
+function openPalette() {
+  const popup = saveContainer.children[0];
+  saveContainer.classList.add("active");
+  popup.classList.add("active");
+}
+
+function closePalette() {
+  const popup = saveContainer.children[0];
+  saveContainer.classList.remove("active");
+  popup.classList.remove("active");
+}
+
+function savePalette() {
+  const popup = saveContainer.children[0];
+  saveContainer.classList.remove("active");
+  popup.classList.remove("active");
+  const name = saveInput.value;
+  const colors = [];
+  currentHexs.forEach((hex) => {
+    colors.push(hex.innerText);
+  });
+
+  let paletteNr = savedPalettes.length;
+  const paletteObj = { name, colors, nr: paletteNr };
+  savedPalettes.push(paletteObj);
+
+  saveToLocal(paletteObj);
+  saveInput.value = "";
+}
+
+function saveToLocal(paletteObj) {
+  if (localStorage.getItem("palettes") === null) {
+    localPalettes = [];
+  } else {
+    localPalettes = JSON.parse(localStorage.getItem("palettes"));
+  }
+  localPalettes.push(paletteObj);
+  localStorage.setItem("palettes", JSON.stringify(localPalettes));
 }
 randomColors();
